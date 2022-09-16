@@ -30,7 +30,6 @@ namespace Muramasa_Translator
 
 
         public int current = 0, template;                               //Controla la posición del array de la traducción.
-        private byte[] strread;                                         //Crea un array de bytes del archivo original y una copia para escribir después
 
         List<byte> readBytes = new List<byte>();
 
@@ -278,12 +277,23 @@ namespace Muramasa_Translator
             txtSaveToFile.ResetText();
             translatedText.ResetText();
             originalText.ResetText();
+            etqSysMsg.Visible = false;
+            etqPreviewDialog.Visible = false;
+            currentLine = 0;
+            totalLines = 0;
+            readBytes = new List<byte>();
+            original = String.Empty;
+            originalText.Text = String.Empty;
+            translatedText.Text = String.Empty;
             etqCurrentFile.Text = "Archivo actual: (Ninguno)";
             etqCurrentLine.Text = "Línea actual: 0/0";
             pctPreviewImg.Image = Properties.Resources.no_file;
         }
 
         private void openNMSFile() {
+
+            ClearVariables();
+
             openFileDialog.Title = "Seleccionar archivo de Textos de Muramasa Rebirth";
             openFileDialog.Filter = "Archivo NMS|*.nms";
 
@@ -324,13 +334,23 @@ namespace Muramasa_Translator
             }
         }
 
+        private void replaceAccents() {
+            if (translatedText.Text.Contains("á") == true ||
+                translatedText.Text.Contains("é") == true ||
+                translatedText.Text.Contains("í") == true)
+            {
+
+                translatedText.Text = translatedText.Text.Replace('á', aacute);
+                translatedText.Text = translatedText.Text.Replace('é', eacute);
+                translatedText.Text = translatedText.Text.Replace('í', iacute);
+            }
+        }
+
         private void translatedText_TextChanged(object sender, EventArgs e)
         {
             btnSave.Enabled = true;
             if (checkAccents.Checked == true) {
-                translatedText.Text = translatedText.Text.Replace('á', aacute);
-                translatedText.Text = translatedText.Text.Replace('é', eacute);
-                translatedText.Text = translatedText.Text.Replace('í', iacute);
+                replaceAccents();
             }
 
             undoList.Push(translatedText.Text);
@@ -364,6 +384,11 @@ namespace Muramasa_Translator
             translatedText.Text = originalText.Text;
         }
 
+        private void checkAccents_CheckedChanged(object sender, EventArgs e)
+        {
+            replaceAccents();
+        }
+
         private void pegarCtrlVToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Retrieves data
@@ -384,15 +409,13 @@ namespace Muramasa_Translator
 
         private void btnPreviousLine_Click(object sender, EventArgs e)
         {
-            if(current<totalLines)
-                current++;
+            currentLine = (current > 0) ? --current : current;
             UpdateCurrentLine();
         }
 
         private void btnNextLine_Click(object sender, EventArgs e)
         {
-            if (current > 0)
-                current--;
+            currentLine = (current < totalLines) ? ++current : current;
             UpdateCurrentLine();
         }
 
@@ -405,8 +428,6 @@ namespace Muramasa_Translator
         private void chkPreviewImage_CheckedChanged(object sender, EventArgs e)
         {
             control = !control;
-            //pictureBox1.Visible = control;
-            //etqPreviewDialog.Visible = control;
 
             switch (template)
             {
@@ -417,6 +438,7 @@ namespace Muramasa_Translator
                     //LyricMsg label
                     break;
                 case 3:
+                    etqSysMsg.Visible = !control;
                     etqPreviewDialog.Visible = control;
                     break;
                 case 4:
@@ -427,6 +449,7 @@ namespace Muramasa_Translator
                     break;
                 case 6:
                     etqSysMsg.Visible = control;
+                    etqPreviewDialog.Visible = !control;
                     break;
             }
         }

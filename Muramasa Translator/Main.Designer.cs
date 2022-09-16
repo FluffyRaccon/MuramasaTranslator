@@ -48,6 +48,7 @@
             this.translatedText = new System.Windows.Forms.RichTextBox();
             this.originalTextLabel = new System.Windows.Forms.Label();
             this.previewGroup = new System.Windows.Forms.GroupBox();
+            this.lblPreviewWarning = new System.Windows.Forms.Label();
             this.etqSysMsg = new System.Windows.Forms.Label();
             this.etqPreviewDialog = new System.Windows.Forms.Label();
             this.pctPreviewImg = new System.Windows.Forms.PictureBox();
@@ -82,7 +83,7 @@
             this.acercaDeToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(762, 24);
+            this.menuStrip.Size = new System.Drawing.Size(796, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -174,6 +175,7 @@
             this.checkAccents.Text = "Corregir automáticamente la acentuación";
             this.toolTips.SetToolTip(this.checkAccents, "Se recomienda activar al final de escribir");
             this.checkAccents.UseVisualStyleBackColor = true;
+            this.checkAccents.CheckedChanged += new System.EventHandler(this.checkAccents_CheckedChanged);
             // 
             // templateLabel
             // 
@@ -208,7 +210,7 @@
             this.originalText.MaxLength = 2000;
             this.originalText.Name = "originalText";
             this.originalText.ReadOnly = true;
-            this.originalText.Size = new System.Drawing.Size(189, 98);
+            this.originalText.Size = new System.Drawing.Size(245, 98);
             this.originalText.TabIndex = 2;
             this.originalText.Text = "";
             // 
@@ -216,7 +218,7 @@
             // 
             this.translatedText.Enabled = false;
             this.translatedText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.translatedText.Location = new System.Drawing.Point(471, 60);
+            this.translatedText.Location = new System.Drawing.Point(507, 60);
             this.translatedText.MaxLength = 300;
             this.translatedText.Name = "translatedText";
             this.translatedText.Size = new System.Drawing.Size(245, 98);
@@ -235,17 +237,29 @@
             // 
             // previewGroup
             // 
+            this.previewGroup.Controls.Add(this.lblPreviewWarning);
             this.previewGroup.Controls.Add(this.etqSysMsg);
             this.previewGroup.Controls.Add(this.etqPreviewDialog);
             this.previewGroup.Controls.Add(this.pctPreviewImg);
             this.previewGroup.Controls.Add(this.etqCurrentLine);
             this.previewGroup.Controls.Add(this.etqCurrentFile);
-            this.previewGroup.Location = new System.Drawing.Point(256, 174);
+            this.previewGroup.Location = new System.Drawing.Point(256, 175);
             this.previewGroup.Name = "previewGroup";
-            this.previewGroup.Size = new System.Drawing.Size(440, 188);
+            this.previewGroup.Size = new System.Drawing.Size(530, 188);
             this.previewGroup.TabIndex = 7;
             this.previewGroup.TabStop = false;
             this.previewGroup.Text = "Vista previa del texto";
+            // 
+            // lblPreviewWarning
+            // 
+            this.lblPreviewWarning.AutoSize = true;
+            this.lblPreviewWarning.Location = new System.Drawing.Point(428, 20);
+            this.lblPreviewWarning.Name = "lblPreviewWarning";
+            this.lblPreviewWarning.Size = new System.Drawing.Size(95, 130);
+            this.lblPreviewWarning.TabIndex = 15;
+            this.lblPreviewWarning.Text = "Nota: es posible\r\nque los textos no\r\nse vean idénticos\r\na la vista previa.\r\n\r\nEl " +
+    "mayor problema\r\nde este programa\r\nes previsualizar los\r\ntextos con más de\r\n3 lin" +
+    "eas de altura.";
             // 
             // etqSysMsg
             // 
@@ -285,7 +299,7 @@
             // 
             this.etqCurrentLine.AutoSize = true;
             this.etqCurrentLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
-            this.etqCurrentLine.Location = new System.Drawing.Point(274, 168);
+            this.etqCurrentLine.Location = new System.Drawing.Point(307, 166);
             this.etqCurrentLine.Name = "etqCurrentLine";
             this.etqCurrentLine.Size = new System.Drawing.Size(114, 15);
             this.etqCurrentLine.TabIndex = 11;
@@ -295,7 +309,7 @@
             // 
             this.etqCurrentFile.AutoSize = true;
             this.etqCurrentFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.etqCurrentFile.Location = new System.Drawing.Point(6, 168);
+            this.etqCurrentFile.Location = new System.Drawing.Point(15, 168);
             this.etqCurrentFile.Name = "etqCurrentFile";
             this.etqCurrentFile.Size = new System.Drawing.Size(152, 13);
             this.etqCurrentFile.TabIndex = 10;
@@ -318,7 +332,7 @@
             // 
             this.translationLabel.AutoSize = true;
             this.translationLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.translationLabel.Location = new System.Drawing.Point(468, 41);
+            this.translationLabel.Location = new System.Drawing.Point(504, 41);
             this.translationLabel.Name = "translationLabel";
             this.translationLabel.Size = new System.Drawing.Size(64, 13);
             this.translationLabel.TabIndex = 9;
@@ -331,7 +345,7 @@
             // btnPreviousLine
             // 
             this.btnPreviousLine.Enabled = false;
-            this.btnPreviousLine.Location = new System.Drawing.Point(722, 60);
+            this.btnPreviousLine.Location = new System.Drawing.Point(758, 60);
             this.btnPreviousLine.Name = "btnPreviousLine";
             this.btnPreviousLine.Size = new System.Drawing.Size(28, 24);
             this.btnPreviousLine.TabIndex = 11;
@@ -344,7 +358,7 @@
             // 
             this.btnNextLine.Enabled = false;
             this.btnNextLine.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnNextLine.Location = new System.Drawing.Point(722, 98);
+            this.btnNextLine.Location = new System.Drawing.Point(758, 98);
             this.btnNextLine.Name = "btnNextLine";
             this.btnNextLine.Size = new System.Drawing.Size(28, 24);
             this.btnNextLine.TabIndex = 12;
@@ -356,7 +370,7 @@
             // buttonSave
             // 
             this.buttonSave.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSave.Location = new System.Drawing.Point(722, 134);
+            this.buttonSave.Location = new System.Drawing.Point(758, 134);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(28, 24);
             this.buttonSave.TabIndex = 13;
@@ -436,7 +450,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 374);
+            this.ClientSize = new System.Drawing.Size(796, 375);
             this.Controls.Add(this.chkPreviewImage);
             this.Controls.Add(this.btnCloseFile);
             this.Controls.Add(this.outputFile);
@@ -513,6 +527,7 @@
         private System.Windows.Forms.Label etqSysMsg;
         private System.Windows.Forms.Label lblWarningSaving;
         private System.Windows.Forms.ToolTip toolTips;
+        private System.Windows.Forms.Label lblPreviewWarning;
     }
 }
 
