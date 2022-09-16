@@ -1,4 +1,4 @@
-### Muramasa Translator (PS Vita)
+# Muramasa Translator (PS Vita)
 
 Este proyecto tiene la finalidad de facilitar la traducción de archivos NMS principalmente, los cuales se encuentran en la siguiente ruta (tras descomprimir los archivos NinPriPatch.cpk de la actualización)
 
@@ -11,9 +11,12 @@ Fuera de eso, este programa no hará milagros como ayudarte a editar las textura
 Este programa viene codificado para funcionar con los reemplazos de las letras (no configurable de momento) **á,é,í que se reemplazan con  '¬', '{', '}'** respectivamente.
 Es decir que si quisiera poner una palabra con acentos, tendría que reemplazar los caracteres de manera manual (o lo puede hacer el programa por tí) de la siguiente manera:
 
-> Para palabras con tilde en la 'a': 'ápice' => '¬pice'
-> Para palabras con tilde en la 'e': 'caminaré' => 'caminar}'
-> Para palabras con tilde en la 'i': 'ansío' => 'ans{o'
+Para palabras con tilde en la 'a':
+>'ápice' => '¬pice'
+Para palabras con tilde en la 'e': 
+>'caminaré' => 'caminar}'
+Para palabras con tilde en la 'i':
+>'ansío' => 'ans{o'
 
 ## ¿Por qué tiene que ser así de complicado?
 
