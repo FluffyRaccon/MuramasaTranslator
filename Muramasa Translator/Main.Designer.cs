@@ -33,6 +33,7 @@
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.abrirArchivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.irALíneaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
@@ -59,7 +60,7 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.btnPreviousLine = new System.Windows.Forms.Button();
             this.btnNextLine = new System.Windows.Forms.Button();
-            this.buttonSave = new System.Windows.Forms.Button();
+            this.btnCopyOriginal = new System.Windows.Forms.Button();
             this.outputFile = new System.Windows.Forms.GroupBox();
             this.lblWarningSaving = new System.Windows.Forms.Label();
             this.BtnSaveToPath = new System.Windows.Forms.Button();
@@ -79,6 +80,7 @@
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
+            this.irALíneaToolStripMenuItem,
             this.ayudaToolStripMenuItem,
             this.acercaDeToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -100,21 +102,28 @@
             this.abrirArchivoToolStripMenuItem.Name = "abrirArchivoToolStripMenuItem";
             this.abrirArchivoToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.abrirArchivoToolStripMenuItem.Text = "Abrir archivo      Ctrl + O";
-            this.abrirArchivoToolStripMenuItem.Click += new System.EventHandler(this.abrirArchivoToolStripMenuItem_Click);
+            this.abrirArchivoToolStripMenuItem.Click += new System.EventHandler(this.AbrirArchivoToolStripMenuItem_Click);
+            // 
+            // irALíneaToolStripMenuItem
+            // 
+            this.irALíneaToolStripMenuItem.Name = "irALíneaToolStripMenuItem";
+            this.irALíneaToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
+            this.irALíneaToolStripMenuItem.Text = "Ir a línea";
+            this.irALíneaToolStripMenuItem.Click += new System.EventHandler(this.irALíneaToolStripMenuItem_Click);
             // 
             // ayudaToolStripMenuItem
             // 
             this.ayudaToolStripMenuItem.Name = "ayudaToolStripMenuItem";
             this.ayudaToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.ayudaToolStripMenuItem.Text = "Ayuda";
-            this.ayudaToolStripMenuItem.Click += new System.EventHandler(this.ayudaToolStripMenuItem_Click);
+            this.ayudaToolStripMenuItem.Click += new System.EventHandler(this.AyudaToolStripMenuItem_Click);
             // 
             // acercaDeToolStripMenuItem
             // 
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
             this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
             this.acercaDeToolStripMenuItem.Text = "Acerca de...";
-            this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
+            this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.AcercaDeToolStripMenuItem_Click);
             // 
             // BottomToolStripPanel
             // 
@@ -199,7 +208,7 @@
             this.comboTemplate.Name = "comboTemplate";
             this.comboTemplate.Size = new System.Drawing.Size(135, 21);
             this.comboTemplate.TabIndex = 0;
-            this.comboTemplate.SelectedIndexChanged += new System.EventHandler(this.comboTemplate_SelectedIndexChanged);
+            this.comboTemplate.SelectedIndexChanged += new System.EventHandler(this.ComboTemplate_SelectedIndexChanged);
             // 
             // originalText
             // 
@@ -326,7 +335,7 @@
             this.btnSave.TabIndex = 8;
             this.btnSave.Text = "Guardar Traducción";
             this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.btnSave.Click += new System.EventHandler(this.BtnSave_Click);
             // 
             // translationLabel
             // 
@@ -367,17 +376,18 @@
             this.btnNextLine.UseVisualStyleBackColor = true;
             this.btnNextLine.Click += new System.EventHandler(this.btnNextLine_Click);
             // 
-            // buttonSave
+            // btnCopyOriginal
             // 
-            this.buttonSave.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonSave.Location = new System.Drawing.Point(758, 134);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(28, 24);
-            this.buttonSave.TabIndex = 13;
-            this.buttonSave.Text = "A";
-            this.toolTips.SetToolTip(this.buttonSave, "Copiar original a traducción");
-            this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.btnCopyOriginal.Enabled = false;
+            this.btnCopyOriginal.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btnCopyOriginal.Location = new System.Drawing.Point(758, 134);
+            this.btnCopyOriginal.Name = "btnCopyOriginal";
+            this.btnCopyOriginal.Size = new System.Drawing.Size(28, 24);
+            this.btnCopyOriginal.TabIndex = 13;
+            this.btnCopyOriginal.Text = "A";
+            this.toolTips.SetToolTip(this.btnCopyOriginal, "Copiar original a traducción");
+            this.btnCopyOriginal.UseVisualStyleBackColor = true;
+            this.btnCopyOriginal.Click += new System.EventHandler(this.buttonSave_Click);
             // 
             // outputFile
             // 
@@ -414,10 +424,12 @@
             // 
             // txtSaveToFile
             // 
+            this.txtSaveToFile.Enabled = false;
             this.txtSaveToFile.Location = new System.Drawing.Point(9, 19);
             this.txtSaveToFile.Name = "txtSaveToFile";
             this.txtSaveToFile.Size = new System.Drawing.Size(153, 20);
             this.txtSaveToFile.TabIndex = 0;
+            this.txtSaveToFile.TextChanged += new System.EventHandler(this.TxtSaveToFile_TextChanged);
             // 
             // btnCloseFile
             // 
@@ -454,7 +466,7 @@
             this.Controls.Add(this.chkPreviewImage);
             this.Controls.Add(this.btnCloseFile);
             this.Controls.Add(this.outputFile);
-            this.Controls.Add(this.buttonSave);
+            this.Controls.Add(this.btnCopyOriginal);
             this.Controls.Add(this.btnNextLine);
             this.Controls.Add(this.btnPreviousLine);
             this.Controls.Add(this.translationLabel);
@@ -513,7 +525,7 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Button btnPreviousLine;
         private System.Windows.Forms.Button btnNextLine;
-        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.Button btnCopyOriginal;
         private System.Windows.Forms.ToolStripMenuItem ayudaToolStripMenuItem;
         private System.Windows.Forms.GroupBox outputFile;
         private System.Windows.Forms.Button BtnSaveToPath;
@@ -528,6 +540,7 @@
         private System.Windows.Forms.Label lblWarningSaving;
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Label lblPreviewWarning;
+        private System.Windows.Forms.ToolStripMenuItem irALíneaToolStripMenuItem;
     }
 }
 

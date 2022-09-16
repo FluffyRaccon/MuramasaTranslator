@@ -12,32 +12,34 @@ namespace Muramasa_Translator
 {
     public partial class Line : Form
     {
-        private int total, actual;
+        private int total  = 0, 
+                    actual = 0;
 
         public Line()
         {
+            this.actual = mainUI.currentLine;
+            this.total = mainUI.totalLines;
             InitializeComponent();
         }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
-            
+            validateNumber();
+            Close();
         }
 
         
         private void txtJumpTo_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-
         }
 
         private void Line_Load(object sender, EventArgs e)
         {
-            actual = mainUI.currentLine;
-            total = mainUI.totalLines;
             etqActualLine.Text = "Línea actual: " + actual + "/" + total;
             etqTotalLines.Text = "/" + total;
-            txtJumpTo.SelectAll(); txtJumpTo.Focus();
+            txtJumpTo.Text = String.Empty;
+            txtJumpTo.Focus();
         }
 
         // Método para leer si se presionó ESC y cerrar la ventana si así es.
@@ -48,21 +50,26 @@ namespace Muramasa_Translator
             if (e.KeyCode == Keys.Escape)
             {
                 this.Close();
-
                 e.SuppressKeyPress = true;
             }
 
             if (e.KeyCode == Keys.Enter)
             {
-                int number = Int32.Parse(txtJumpTo.Text.ToString());    //Se obtiene el numero digitado.
-
-                if (number > total)
-                    mainUI.currentLine = total;
-                else
-                    mainUI.currentLine = number;
-
-
+                validateNumber();
                 this.Close();
+            }
+        }
+
+        private void validateNumber() {
+            int number = Int32.Parse(txtJumpTo.Text.ToString());    //Se obtiene el numero digitado.
+
+            if (number >= total)
+            {
+                mainUI.currentLine = total;
+            }
+            else if (number > 0)
+            {
+                mainUI.currentLine = number;
             }
         }
     }

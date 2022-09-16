@@ -23,19 +23,24 @@ namespace Muramasa_Translator
 
         //Saves the previous offset before reading the bytes in file.
         private int prevOffset;
+        private int currentLength;
 
         //Sets the limits for reading the files
         private static int minOffset = 0;
         private static int maxOffset = 0;
 
 
-        public int current = 0, template;                               //Controla la posición del array de la traducción.
+        public int current = 0, template;
 
         List<byte> readBytes = new List<byte>();
+        
+        private string original, translated;
 
-        private string original, translated;                            //Se crea un array para que lo pueda transferir al RichTextBox.
-        private static int offset = 0;
-        private static int required = 0;
+        //Number for the specific-file offset and the required amount of bytes.
+        private int offset = 0;
+        //private int required = 0;
+
+        //Control for the "lines" (more likely blocks)
         public static int currentLine = 0;
         public static int totalLines = 0;
 
@@ -50,13 +55,13 @@ namespace Muramasa_Translator
             etqSysMsg.Visible = false;
         }
 
-        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AcercaDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About aboutWindow = new About();
             aboutWindow.Show();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void BtnSave_Click(object sender, EventArgs e)
         {
             if (isOpen && change && outputPath!=null)
             {
@@ -70,18 +75,20 @@ namespace Muramasa_Translator
             }
         }
 
-        private void abrirArchivoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AbrirArchivoToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
             // Call to action open file dialog => openNMSFile();
-            openNMSFile();
+            OpenNMSFile();
 
 
         }
 
+        public void SetCurrentLine(int val) { currentLine = val; }
+
         public void UpdateCurrentLine()
         {
-            
+            etqCurrentLine.Text = currentLinePrefix + currentLine + "/" + totalLines;
         }
 
         //private static string ConvertStringArrayToByte(string[] array)
@@ -98,23 +105,29 @@ namespace Muramasa_Translator
         //    return Convert.ToBase64String(plainTextBytes);
         //}
 
-        private void ayudaToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AyudaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Tutorial window = new Tutorial();
             window.Show();
         }
 
-        private void countLinesOnFile(string file) {
+        private void CountLinesOnFile(string file) {
             using (BinaryReader br = new BinaryReader(File.Open(file, FileMode.Open)))
             {
+                int ach;
                 br.BaseStream.Seek(offset, SeekOrigin.Begin);
                 while (true)
                 {
+                    
                     // If we past from maxOffset, then we break the counting and the while.
                     if (br.BaseStream.Position >= maxOffset)
                         break;
 
-                    if(br.ReadByte() == (byte)'\0')
+                    //Read the value from file.
+                    ach = br.ReadByte();
+
+                    //Each NUL, CR or LF the totalLines will increment
+                    if ( ach == (byte)'\0')
                         totalLines += 1;
                 }
                 br.Close();
@@ -122,33 +135,99 @@ namespace Muramasa_Translator
             etqCurrentLine.Text = currentLinePrefix+ "0/" +totalLines;
         }
 
-        public void ReadNMSFile(string file)
+        private void ReadNMSFile(string file, bool reverse = false)
         {
             using (BinaryReader br = new BinaryReader(File.Open(file, FileMode.Open)))
             {
+                //Restarts currentLength to match 0.
+                currentLength = 0;
+
                 // Seek to our required position.
-                br.BaseStream.Seek(offset, SeekOrigin.Begin);
+                if(reverse == true)
+                    br.BaseStream.Seek(prevOffset, SeekOrigin.Begin);
+                else
+                    br.BaseStream.Seek(offset, SeekOrigin.Begin);
+
                 int chara;
                 while ((chara = br.ReadByte()) != (byte)'\0')
                 {
-                    //Updates the prevOffset for the line by saving the current offset, then updates the current offset + 1
-                    prevOffset = offset;
-                    offset = (int)br.BaseStream.Position;
+                    //Read the value from file and store the read byte.
                     readBytes.Add((byte)chara);
+
+                    //We need to save an state of how much length was seeked until next null byte.
+                    currentLength += 1;
+
                 }
+
+                //Updates the prevOffset for the line by saving the current offset, then updates the current offset.
+                offset = (int)br.BaseStream.Position;
+
+                //Close the stream from file
                 br.Close();
             }
 
-            original = bytesToString(readBytes.ToArray());
+            original = BytesToString(readBytes.ToArray());
 
             //Updates the texts on the translation's boxes
-            updateOriginalStringText(original);
-            updateTranslatesStringText(original);
+            UpdateOriginalStringText(original);
+            UpdateTranslatesStringText(original);
+
+            //Updates the current line in order to know in what block we are
+            if (currentLine == 0)
+                currentLine = 1;
+
+            /* In case of saving the file with changes performed... 
+             *      1. Take the lenght from the translatedText RichTextBox.
+             *      2. Open the file with prevOffset and read until the lenght from last step.
+             *      3. Delete bytes on the selected range.
+             *      4. Start writing as bytes the info from the translatedText RichTextBox
+             *      5. Close the file
+             */
+
+            //Clear the byte list to prevent undesired merges
+            readBytes.Clear();
+
+            //For debug porpouses shows the current and previous offset.
+            MessageBox.Show("Current offset: " + offset + "\nPrevious offset:" + prevOffset + "\nLength: " + currentLength + "\nCurrent line: " + currentLine, "Actual file offsets", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
+        //Function to only get the offset for the line specified.
+        private void ReadNMSFile(int line)
+        {
+            int current = 0;
+
+            using (BinaryReader br = new BinaryReader(File.Open(inputPath, FileMode.Open)))
+            {
+                int ach; currentLength = 0;
+                br.BaseStream.Seek(minOffset, SeekOrigin.Begin);
+                while (true)
+                {
+
+                    // If we past from maxOffset, then we break the counting and the while.
+                    if (br.BaseStream.Position >= maxOffset || current == line)
+                        break;
+
+                    //Read the value from file and store the read byte.
+                    ach = br.ReadByte();
+                    currentLength += 1;
+
+                    //Each NUL, CR or LF the totalLines will increment
+                    if (ach == (byte)'\0')
+                        current += 1;
+                }
+                prevOffset = offset;
+                offset = (int)br.BaseStream.Position;
+                br.Close();
+            }
+
+            currentLine = line;
+            ReadNMSFile(inputPath);
+
+        }
+
         //Convert a byte array to its equivalent in string.
-        private string bytesToString(byte[] bytes) {
+        private string BytesToString(byte[] bytes) {
             string response = string.Empty;
 
             foreach (byte b in bytes)
@@ -157,26 +236,26 @@ namespace Muramasa_Translator
             return response;
         }
 
-        private void updateOriginalStringText(string text) { originalText.Text = text; }
+        private void UpdateOriginalStringText(string text) { originalText.Text = text; }
 
-        private void updateTranslatesStringText(string text) { translatedText.Text = text; }
+        private void UpdateTranslatesStringText(string text) { translatedText.Text = text; }
 
 
-        private void comboTemplate_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboTemplate_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (comboTemplate.Text)
             {
                 case "sysmsg.nms":
-                    offset = 4310; //4310 was the exact value for bytes omited
+                    offset = 4310;
                     maxOffset = 50561;
                     minOffset = offset;
-                    required = 46251;
+                    //required = 46251;     //This can be omited, is not used anymore. The number of all bytes required from the file.
                     template = 6;
                     pctPreviewImg.Image = Properties.Resources.sysmsg;
                     break;
                 case "scename_US.nms":
                     offset = 205;
-                    required = -1;
+                    //required = -1;
                     template = 4;
                     pctPreviewImg.Image = Properties.Resources.scemsg;
                     break;
@@ -184,23 +263,23 @@ namespace Muramasa_Translator
                     offset = 8836;
                     maxOffset = 271911;
                     minOffset = offset;
-                    required = 263075;
+                    //required = 263075;
                     template = 3;
                     pctPreviewImg.Image = Properties.Resources.scemsg;
                     break;
                 case "_itemdata.nms":
                     offset = 7137;
-                    required = -1;
+                    //required = -1;
                     template = 1;
                     break;
                 case "lyricmsg.nms":
                     offset = 77;
-                    required = -1;
+                    //required = -1;
                     template = 2;
                     break;
                 case "staffroll.nms":
                     offset = -1;
-                    required = -1;
+                    //required = -1;
                     template = 5;
                     break;
             }
@@ -215,18 +294,12 @@ namespace Muramasa_Translator
                 if (choice == DialogResult.OK)
                 {
                     ClearVariables();
-                    EnableDisableFields();
+                    EnableOrDisableFields();
                 }
                     
             }
             else
                 ClearVariables();
-        }
-
-        private void irALíneaCtrlLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Line search = new Line();
-            search.Show();
         }
 
         void HotKey_KeyDown(object sender, KeyEventArgs e)
@@ -235,13 +308,15 @@ namespace Muramasa_Translator
             {
                 //Muestra la ventana de mostrar línea.
                 Line search = new Line();
-                search.Show();
+                search.ShowDialog();
+                ReadNMSFile(currentLine);
+                UpdateCurrentLine();
                 e.SuppressKeyPress = true;
             }
 
             else if(e.Control && e.KeyCode == Keys.O)
             {
-                openNMSFile();
+                OpenNMSFile();
                 e.SuppressKeyPress = true;
             }
 
@@ -263,9 +338,10 @@ namespace Muramasa_Translator
             
         }
 
-        public void UpdateFilePath()
+        public void UpdateFilePath(string path)
         {
-            etqCurrentFile.Text = "Archivo actual: " + Path.GetFileName(openFileDialog.FileName);
+            inputPath = path;
+            etqCurrentFile.Text = "Archivo actual: " + Path.GetFileName(inputPath);
         }
 
         private void ClearVariables()
@@ -281,7 +357,7 @@ namespace Muramasa_Translator
             etqPreviewDialog.Visible = false;
             currentLine = 0;
             totalLines = 0;
-            readBytes = new List<byte>();
+            readBytes.Clear();
             original = String.Empty;
             originalText.Text = String.Empty;
             translatedText.Text = String.Empty;
@@ -290,7 +366,7 @@ namespace Muramasa_Translator
             pctPreviewImg.Image = Properties.Resources.no_file;
         }
 
-        private void openNMSFile() {
+        private void OpenNMSFile() {
 
             ClearVariables();
 
@@ -301,13 +377,12 @@ namespace Muramasa_Translator
             {
                 isOpen = true;
                 change = true;
-                UpdateFilePath();
-                EnableDisableFields();
-                UpdateCurrentLine();
-                inputPath = openFileDialog.FileName;
+                UpdateFilePath(openFileDialog.FileName);
+                EnableOrDisableFields();
                 updateImageOnOpenFile(openFileDialog.SafeFileName);
-                countLinesOnFile(inputPath);
+                CountLinesOnFile(inputPath);
                 ReadNMSFile(inputPath);
+                UpdateCurrentLine();
             }
         }
 
@@ -384,22 +459,25 @@ namespace Muramasa_Translator
             translatedText.Text = originalText.Text;
         }
 
+        private void irALíneaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (isOpen && change)
+            {
+                Line search = new Line();
+                search.ShowDialog();
+                ReadNMSFile(currentLine);
+                UpdateCurrentLine();
+            }
+        }
+
+        private void TxtSaveToFile_TextChanged(object sender, EventArgs e)
+        {
+            btnSave.Enabled = true;
+        }
+
         private void checkAccents_CheckedChanged(object sender, EventArgs e)
         {
             replaceAccents();
-        }
-
-        private void pegarCtrlVToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Retrieves data
-
-            IDataObject iData = Clipboard.GetDataObject();
-
-            // Is Data Text?
-
-            if (iData.GetDataPresent(DataFormats.Text))
-
-                translatedText.Text = (String)iData.GetData(DataFormats.Text);
         }
 
         private void copiarCtrlCToolStripMenuItem_Click(object sender, EventArgs e)
@@ -409,14 +487,24 @@ namespace Muramasa_Translator
 
         private void btnPreviousLine_Click(object sender, EventArgs e)
         {
-            currentLine = (current > 0) ? --current : current;
-            UpdateCurrentLine();
+            //Prevents from decrementing the line counter
+            if (currentLine > 1 && currentLine <= totalLines)
+            {
+                --currentLine;
+                ReadNMSFile(currentLine);
+                UpdateCurrentLine();
+            }
         }
 
         private void btnNextLine_Click(object sender, EventArgs e)
         {
-            currentLine = (current < totalLines) ? ++current : current;
-            UpdateCurrentLine();
+            //currentLine = (current < totalLines) ? ++current : current;
+            if (currentLine < totalLines)
+            {
+                currentLine++;
+                ReadNMSFile(inputPath);
+                UpdateCurrentLine();
+            }
         }
 
         private void cortarCrtlXToolStripMenuItem_Click(object sender, EventArgs e)
@@ -466,9 +554,13 @@ namespace Muramasa_Translator
             }
         }
 
-        private void EnableDisableFields()
+        private void EnableOrDisableFields()
         {
-            this.txtSaveToFile.Enabled = change;
+            if (txtSaveToFile.Text != null)
+            {
+                this.btnSave.Enabled = change;
+                this.txtSaveToFile.Enabled = change;
+            }
             this.originalText.Enabled = change;
             this.translatedText.Enabled = change;
             this.btnNextLine.Enabled = change;
@@ -477,7 +569,7 @@ namespace Muramasa_Translator
             this.outputFile.Enabled = change;
             this.btnCloseFile.Enabled = change;
             this.chkPreviewImage.Enabled = change;
-            this.btnSave.Enabled = change;
+            this.btnCopyOriginal.Enabled = change;
         }
 
         public void LineChanged()
