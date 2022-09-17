@@ -73,10 +73,13 @@ namespace Muramasa_Translator
                 using (var bw = new BinaryWriter(fs))
                 {
                     bw.Write(0x42534D4E); // Writes the file header => "NMSB". This can be omited, the header is already known and written.
+                    bw.Write('.');
                     bw.Write(prueba);
+                    bw.Write('\0');
                     bw.Close();
                 }
                 //Perform save action merging the header file + data + footer
+                MessageBox.Show("Datos guardados correctamente.", "Éxito");
             }
         }
 
@@ -242,7 +245,7 @@ namespace Muramasa_Translator
             if (isOpen && isValid)
             {
                 MessageBox.Show("Ya tiene un archivo identificado. Presione NO para ignorar el cambio de plantilla.", "Advertencia de posible error de lectura de archivo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
+                comboTemplate.ResetText();
                 isValid = (DialogResult == DialogResult.Yes) ? false : true;
             }
             else {
@@ -421,6 +424,7 @@ namespace Muramasa_Translator
                     break;
             }
             comboTemplate.SelectedIndex = comboTemplate.FindStringExact(filename);
+            prevInd = comboTemplate.SelectedIndex;
         }
 
         private void replaceAccents() {
@@ -437,7 +441,8 @@ namespace Muramasa_Translator
 
         private void translatedText_TextChanged(object sender, EventArgs e)
         {
-            btnSave.Enabled = true;
+            if (outputPath != null )
+                btnSave.Enabled = true;
             if (checkAccents.Checked == true) {
                 replaceAccents();
             }
