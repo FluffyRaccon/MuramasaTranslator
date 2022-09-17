@@ -9,7 +9,8 @@ namespace Muramasa_Translator
     public partial class mainUI : Form
     {
         private bool isOpen  = false, 
-                     change  = false, 
+                     change  = false,
+                     isValid = false,
                      control = true;
 
         //Replacement chars for the accents.
@@ -30,7 +31,9 @@ namespace Muramasa_Translator
         private static int maxOffset = 0;
 
 
-        public int current = 0, template;
+        public int current  = 0,
+                   prevInd  = 0,
+                   template = 0;
 
         List<byte> readBytes = new List<byte>();
         
@@ -63,33 +66,25 @@ namespace Muramasa_Translator
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
+            byte[] prueba = Encoding.UTF8.GetBytes(translatedText.Text);
             if (isOpen && change && outputPath!=null)
             {
-                using (var fs = new FileStream(openFileDialog.FileName, FileMode.Create))
+                using (var fs = new FileStream(outputPath, FileMode.Create))
                 using (var bw = new BinaryWriter(fs))
                 {
-                    //bw.Write(0x42534D4E); // Writes the file header => "NMSB". This can be omited, the header is already known and written.
-
+                    bw.Write(0x42534D4E); // Writes the file header => "NMSB". This can be omited, the header is already known and written.
+                    bw.Write(prueba);
+                    bw.Close();
                 }
-                //Perform save action merging the header file + data + footer.
+                //Perform save action merging the header file + data + footer
             }
         }
 
-        private void AbrirArchivoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            // Call to action open file dialog => openNMSFile();
-            OpenNMSFile();
-
-
-        }
+        private void AbrirArchivoToolStripMenuItem_Click(object sender, EventArgs e){ OpenNMSFile(); }
 
         public void SetCurrentLine(int val) { currentLine = val; }
 
-        public void UpdateCurrentLine()
-        {
-            etqCurrentLine.Text = currentLinePrefix + currentLine + "/" + totalLines;
-        }
+        public void UpdateCurrentLine() { etqCurrentLine.Text = currentLinePrefix + currentLine + "/" + totalLines; }
 
         //private static string ConvertStringArrayToByte(string[] array)
         //{
@@ -135,6 +130,7 @@ namespace Muramasa_Translator
             etqCurrentLine.Text = currentLinePrefix+ "0/" +totalLines;
         }
 
+        //Main method reading NMSB files, the others are just auxiliars.
         private void ReadNMSFile(string file, bool reverse = false)
         {
             using (BinaryReader br = new BinaryReader(File.Open(file, FileMode.Open)))
@@ -188,7 +184,7 @@ namespace Muramasa_Translator
             readBytes.Clear();
 
             //For debug porpouses shows the current and previous offset.
-            MessageBox.Show("Current offset: " + offset + "\nPrevious offset:" + prevOffset + "\nLength: " + currentLength + "\nCurrent line: " + currentLine, "Actual file offsets", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Current offset: " + offset + "\nPrevious offset:" + prevOffset + "\nLength: " + currentLength + "\nCurrent line: " + currentLine, "Actual file offsets", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -243,45 +239,63 @@ namespace Muramasa_Translator
 
         private void ComboTemplate_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (comboTemplate.Text)
+            if (isOpen && isValid)
             {
-                case "sysmsg.nms":
-                    offset = 4310;
-                    maxOffset = 50561;
-                    minOffset = offset;
-                    //required = 46251;     //This can be omited, is not used anymore. The number of all bytes required from the file.
-                    template = 6;
-                    pctPreviewImg.Image = Properties.Resources.sysmsg;
-                    break;
-                case "scename_US.nms":
-                    offset = 205;
-                    //required = -1;
-                    template = 4;
-                    pctPreviewImg.Image = Properties.Resources.scemsg;
-                    break;
-                case "scemsg.nms":
-                    offset = 8836;
-                    maxOffset = 271911;
-                    minOffset = offset;
-                    //required = 263075;
-                    template = 3;
-                    pctPreviewImg.Image = Properties.Resources.scemsg;
-                    break;
-                case "_itemdata.nms":
-                    offset = 7137;
-                    //required = -1;
-                    template = 1;
-                    break;
-                case "lyricmsg.nms":
-                    offset = 77;
-                    //required = -1;
-                    template = 2;
-                    break;
-                case "staffroll.nms":
-                    offset = -1;
-                    //required = -1;
-                    template = 5;
-                    break;
+                MessageBox.Show("Ya tiene un archivo identificado. Presione NO para ignorar el cambio de plantilla.", "Advertencia de posible error de lectura de archivo", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                isValid = (DialogResult == DialogResult.Yes) ? false : true;
+            }
+            else {
+                switch (comboTemplate.Text)
+                {
+                    case "_itemdata.nms":
+                        offset = 14301;
+                        maxOffset = 67057;
+                        //required = 52653;
+                        template = 1;
+                        //pctPreviewImg.Image = Properties.Resources.scemsg; //TODO: Add screenshot to be used on Item Data.
+                        break;
+                    case "scemsg.nms":
+                        offset = 8836;
+                        maxOffset = 271911;
+                        //required = 263075;
+                        template = 3;
+                        pctPreviewImg.Image = Properties.Resources.scemsg;
+                        break;
+                    case "scename_US.nms":
+                        offset = 844;
+                        maxOffset = 3308;
+                        //required = 2464;
+                        template = 4;
+                        pctPreviewImg.Image = Properties.Resources.scemsg;
+                        break;
+                    case "staffroll.nms":
+                        offset = -1;
+                        maxOffset = 67057;
+                        template = 5;
+                        break;
+                    case "sysmsg.nms":
+                        offset = 4310;
+                        maxOffset = 50561;
+                        //required = 46251;
+                        template = 6;
+                        pctPreviewImg.Image = Properties.Resources.sysmsg;
+                        break;
+                    case "lyricmsg.nms":
+                        offset = 1892;
+                        maxOffset = 47744;
+                        //required = 45852;
+                        template = 2;
+                        break;
+                    case "Otro archivo...":
+                        offset = 0;
+                        maxOffset = 40;
+                        pctPreviewImg.Image = Properties.Resources.no_template;
+                        //TODO: ask for the offset, maxOffset and leave open the template for the custom file that should be treated as
+                        break;
+                }
+                isValid = true;
+                minOffset = offset;
             }
         }
 
@@ -346,8 +360,7 @@ namespace Muramasa_Translator
 
         private void ClearVariables()
         {
-            change = false;
-            isOpen = false;
+            change = isOpen = isValid = false;
             comboTemplate.ResetText();
             chkPreviewImage.Checked = true;
             txtSaveToFile.ResetText();
@@ -375,8 +388,7 @@ namespace Muramasa_Translator
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                isOpen = true;
-                change = true;
+                isOpen = change = true;
                 UpdateFilePath(openFileDialog.FileName);
                 EnableOrDisableFields();
                 updateImageOnOpenFile(openFileDialog.SafeFileName);
@@ -390,23 +402,25 @@ namespace Muramasa_Translator
             switch (filename) {
                 case "scemsg.nms":
                     etqPreviewDialog.Visible = true;
-                    comboTemplate.SelectedIndex = comboTemplate.FindStringExact("scemsg.nms");
                     pctPreviewImg.Image = Properties.Resources.scemsg;
                     break;
                 case "sysmsg.nms":
                     etqSysMsg.Visible = true;
-                    comboTemplate.SelectedIndex = comboTemplate.FindStringExact("sysmsg.nms");
                     pctPreviewImg.Image = Properties.Resources.sysmsg;
                     break;
                 case "scename_US.nms":
                     etqPreviewDialog.Visible = true;
-                    comboTemplate.SelectedIndex = comboTemplate.FindStringExact("scename_US.nms");
+                    pctPreviewImg.Image = Properties.Resources.scemsg;
+                    break;
+                case "_itemdata.nms":
+                    etqPreviewDialog.Visible = true;
                     pctPreviewImg.Image = Properties.Resources.scemsg;
                     break;
                 default:
                     pctPreviewImg.Image = Properties.Resources.no_template;
                     break;
             }
+            comboTemplate.SelectedIndex = comboTemplate.FindStringExact(filename);
         }
 
         private void replaceAccents() {
@@ -434,6 +448,7 @@ namespace Muramasa_Translator
             {
                 case 1:
                     //ItemData label
+                    etqPreviewDialog.Text = translatedText.Text;
                     break;
                 case 2:
                     //LyricMsg label
@@ -521,6 +536,8 @@ namespace Muramasa_Translator
             {
                 case 1:
                     //ItemData label
+                    etqSysMsg.Visible = !control;
+                    etqPreviewDialog.Visible = control;
                     break;
                 case 2:
                     //LyricMsg label
@@ -544,13 +561,14 @@ namespace Muramasa_Translator
 
         private void BtnSaveToPath_Click(object sender, EventArgs e)
         {
-            saveFileDialog.Title = "Seleccionar salida texto de Muramasa Rebirth";
-            saveFileDialog.Filter = "Archivos NMS|*.nms";
+            saveFileDialog.Title = "Guardar texto de Muramasa Rebirth";
+            saveFileDialog.Filter = "Archivo NMS|*.nms";
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 outputPath = saveFileDialog.FileName.ToString();
                 txtSaveToFile.Text = outputPath;
+                txtSaveToFile.ReadOnly = true;
             }
         }
 

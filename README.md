@@ -25,6 +25,11 @@ Es decir que si quisiera poner una palabra con acentos, tendría que reemplazar 
 >
 >'ansío' => 'ans{o'
 >
+**¿Y los ejemplos para la 'ó' y 'ú'?**
+>
+> No cambia su uso, se pueden utilizar tal cual.
+>
+
 
 ### ¿Por qué tiene que ser así de complicado?
 

@@ -194,16 +194,19 @@
             this.templateLabel.Size = new System.Drawing.Size(46, 13);
             this.templateLabel.TabIndex = 1;
             this.templateLabel.Text = "Plantilla:";
+            this.toolTips.SetToolTip(this.templateLabel, "Plantilla de previsualización\r\nde archivo.");
             // 
             // comboTemplate
             // 
             this.comboTemplate.FormattingEnabled = true;
             this.comboTemplate.Items.AddRange(new object[] {
             "_itemdata.nms",
+            "lyrics.nms",
             "scemsg.nms",
             "scename_US.nms",
             "staffroll.nms",
-            "sysmsg.nms"});
+            "sysmsg.nms",
+            "Otro archivo..."});
             this.comboTemplate.Location = new System.Drawing.Point(58, 19);
             this.comboTemplate.Name = "comboTemplate";
             this.comboTemplate.Size = new System.Drawing.Size(135, 21);
