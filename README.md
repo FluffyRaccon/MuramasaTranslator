@@ -3,10 +3,21 @@
 Este proyecto tiene la finalidad de facilitar la traducción de archivos NMS principalmente, los cuales se encuentran en la siguiente ruta (tras descomprimir los archivos NinPriPatch.cpk de la actualización)
 
 >
-> Ruta:  blabla...**/_US/msgsheet**
+> Ruta:  OtrasCarpetas **/_US/msgsheet**
 >
 
 Fuera de eso, este programa no hará milagros como ayudarte a editar las texturas que vienen en formato FTX -> GXT -> DDS (sí, triple procedimiento de conversión para poder editar las texturas)
+
+## Novedades
+
+Versión 1.0.0.3 (18/SEPT/2022)
+
+- Mejorada la experiencia de usuario, ahora hay un botón para reemplazar/restaurar los acentos de acuerdo al parche.
+- Ahora el programa recuerda el archivo que abriste por última vez y la línea donde te quedaste, pudiendo restaurar la sesión al abrir el programa.
+- Se agregó una etiqueta con el estatus actual en el programa, se coloca en verde tras guardar datos o restaurar una sesión.
+- Tras compilar, se genera un único archivo.
+
+
 
 ### Respecto a la acentuación de palabras
 
