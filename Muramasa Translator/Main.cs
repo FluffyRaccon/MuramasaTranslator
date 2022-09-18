@@ -513,6 +513,14 @@ namespace Muramasa_Translator
                 translatedText.Text = translatedText.Text.Replace('é', eacute);
                 translatedText.Text = translatedText.Text.Replace('í', iacute);
             }
+            else
+            {
+                //Rollback to the accents if needed
+                translatedText.Text = translatedText.Text.Replace(aacute, 'á');
+                translatedText.Text = translatedText.Text.Replace(eacute, 'é');
+                translatedText.Text = translatedText.Text.Replace(iacute, 'í');
+            }
+            UpdateStatusLabel("Acentos reemp.", Color.Black);
         }
 
         private void UpdateStatusLabel(string stat, Color color) {
@@ -561,7 +569,10 @@ namespace Muramasa_Translator
                 UpdateStatusLabel("Sin cambios", Color.Black);
             }
             else
+            {
                 translatedText.Text = originalText.Text;
+                UpdateStatusLabel("Texto rest.", Color.Black);
+            }
         }
 
         private void IrALíneaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -611,6 +622,7 @@ namespace Muramasa_Translator
             if (currentLine > 0)
             {
                 ReadNMSFile(--currentLine, extFile);
+                UpdateStatusLabel("Línea ant.", Color.Black);
                 UpdateCurrentLine();
             }
         }
@@ -620,6 +632,7 @@ namespace Muramasa_Translator
             if (currentLine < totalLines)
             {
                 ReadNMSFile(++currentLine, extFile);
+                UpdateStatusLabel("Linea sig.", Color.Black);
                 UpdateCurrentLine();
             }
         }

@@ -483,7 +483,7 @@
             this.btnCorregirAcentos.Size = new System.Drawing.Size(28, 24);
             this.btnCorregirAcentos.TabIndex = 17;
             this.btnCorregirAcentos.Text = "¥";
-            this.toolTips.SetToolTip(this.btnCorregirAcentos, "Reemplazar acentos");
+            this.toolTips.SetToolTip(this.btnCorregirAcentos, "Reemplazar acentos/Revertir acentos");
             this.btnCorregirAcentos.UseVisualStyleBackColor = true;
             this.btnCorregirAcentos.Click += new System.EventHandler(this.CorregirAcentos_Click);
             // 
