@@ -21,5 +21,10 @@ namespace Muramasa_Translator
         {
            Close();
         }
+
+        private void lblInstructions_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

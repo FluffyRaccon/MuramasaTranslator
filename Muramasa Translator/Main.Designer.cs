@@ -42,13 +42,14 @@
             this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
             this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
             this.settingsGroup = new System.Windows.Forms.GroupBox();
-            this.checkAccents = new System.Windows.Forms.CheckBox();
+            this.checkEscribirOtroArchivo = new System.Windows.Forms.CheckBox();
             this.templateLabel = new System.Windows.Forms.Label();
             this.comboTemplate = new System.Windows.Forms.ComboBox();
             this.originalText = new System.Windows.Forms.RichTextBox();
             this.translatedText = new System.Windows.Forms.RichTextBox();
             this.originalTextLabel = new System.Windows.Forms.Label();
             this.previewGroup = new System.Windows.Forms.GroupBox();
+            this.etqEstatus = new System.Windows.Forms.Label();
             this.lblPreviewWarning = new System.Windows.Forms.Label();
             this.etqSysMsg = new System.Windows.Forms.Label();
             this.etqPreviewDialog = new System.Windows.Forms.Label();
@@ -69,6 +70,7 @@
             this.chkPreviewImage = new System.Windows.Forms.CheckBox();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+            this.btnCorregirAcentos = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.settingsGroup.SuspendLayout();
             this.previewGroup.SuspendLayout();
@@ -109,7 +111,7 @@
             this.irALíneaToolStripMenuItem.Name = "irALíneaToolStripMenuItem";
             this.irALíneaToolStripMenuItem.Size = new System.Drawing.Size(63, 20);
             this.irALíneaToolStripMenuItem.Text = "Ir a línea";
-            this.irALíneaToolStripMenuItem.Click += new System.EventHandler(this.irALíneaToolStripMenuItem_Click);
+            this.irALíneaToolStripMenuItem.Click += new System.EventHandler(this.IrALíneaToolStripMenuItem_Click);
             // 
             // ayudaToolStripMenuItem
             // 
@@ -163,28 +165,28 @@
             // 
             // settingsGroup
             // 
-            this.settingsGroup.Controls.Add(this.checkAccents);
+            this.settingsGroup.Controls.Add(this.checkEscribirOtroArchivo);
             this.settingsGroup.Controls.Add(this.templateLabel);
             this.settingsGroup.Controls.Add(this.comboTemplate);
             this.settingsGroup.Enabled = false;
-            this.settingsGroup.Location = new System.Drawing.Point(12, 41);
+            this.settingsGroup.Location = new System.Drawing.Point(12, 46);
             this.settingsGroup.Name = "settingsGroup";
-            this.settingsGroup.Size = new System.Drawing.Size(229, 96);
+            this.settingsGroup.Size = new System.Drawing.Size(229, 73);
             this.settingsGroup.TabIndex = 1;
             this.settingsGroup.TabStop = false;
             this.settingsGroup.Text = "Configuración";
             // 
-            // checkAccents
+            // checkEscribirOtroArchivo
             // 
-            this.checkAccents.AutoSize = true;
-            this.checkAccents.Location = new System.Drawing.Point(9, 57);
-            this.checkAccents.Name = "checkAccents";
-            this.checkAccents.Size = new System.Drawing.Size(219, 17);
-            this.checkAccents.TabIndex = 2;
-            this.checkAccents.Text = "Corregir automáticamente la acentuación";
-            this.toolTips.SetToolTip(this.checkAccents, "Se recomienda activar al final de escribir");
-            this.checkAccents.UseVisualStyleBackColor = true;
-            this.checkAccents.CheckedChanged += new System.EventHandler(this.checkAccents_CheckedChanged);
+            this.checkEscribirOtroArchivo.AutoSize = true;
+            this.checkEscribirOtroArchivo.Location = new System.Drawing.Point(5, 47);
+            this.checkEscribirOtroArchivo.Name = "checkEscribirOtroArchivo";
+            this.checkEscribirOtroArchivo.Size = new System.Drawing.Size(218, 17);
+            this.checkEscribirOtroArchivo.TabIndex = 2;
+            this.checkEscribirOtroArchivo.Text = "Escribir una copia del archivo del original";
+            this.toolTips.SetToolTip(this.checkEscribirOtroArchivo, "Se recomienda activar al final de escribir");
+            this.checkEscribirOtroArchivo.UseVisualStyleBackColor = true;
+            this.checkEscribirOtroArchivo.CheckedChanged += new System.EventHandler(this.EscribirOtroArchivo_CheckedChanged);
             // 
             // templateLabel
             // 
@@ -201,7 +203,7 @@
             this.comboTemplate.FormattingEnabled = true;
             this.comboTemplate.Items.AddRange(new object[] {
             "_itemdata.nms",
-            "lyrics.nms",
+            "lyricmsg.nms",
             "scemsg.nms",
             "scename_US.nms",
             "staffroll.nms",
@@ -236,7 +238,7 @@
             this.translatedText.Size = new System.Drawing.Size(245, 98);
             this.translatedText.TabIndex = 3;
             this.translatedText.Text = "";
-            this.translatedText.TextChanged += new System.EventHandler(this.translatedText_TextChanged);
+            this.translatedText.TextChanged += new System.EventHandler(this.TranslatedText_TextChanged);
             // 
             // originalTextLabel
             // 
@@ -249,6 +251,7 @@
             // 
             // previewGroup
             // 
+            this.previewGroup.Controls.Add(this.etqEstatus);
             this.previewGroup.Controls.Add(this.lblPreviewWarning);
             this.previewGroup.Controls.Add(this.etqSysMsg);
             this.previewGroup.Controls.Add(this.etqPreviewDialog);
@@ -261,6 +264,16 @@
             this.previewGroup.TabIndex = 7;
             this.previewGroup.TabStop = false;
             this.previewGroup.Text = "Vista previa del texto";
+            // 
+            // etqEstatus
+            // 
+            this.etqEstatus.AutoSize = true;
+            this.etqEstatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.etqEstatus.Location = new System.Drawing.Point(214, 168);
+            this.etqEstatus.Name = "etqEstatus";
+            this.etqEstatus.Size = new System.Drawing.Size(100, 13);
+            this.etqEstatus.TabIndex = 16;
+            this.etqEstatus.Text = "Estado: Inactivo";
             // 
             // lblPreviewWarning
             // 
@@ -311,7 +324,7 @@
             // 
             this.etqCurrentLine.AutoSize = true;
             this.etqCurrentLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
-            this.etqCurrentLine.Location = new System.Drawing.Point(307, 166);
+            this.etqCurrentLine.Location = new System.Drawing.Point(365, 166);
             this.etqCurrentLine.Name = "etqCurrentLine";
             this.etqCurrentLine.Size = new System.Drawing.Size(114, 15);
             this.etqCurrentLine.TabIndex = 11;
@@ -357,20 +370,20 @@
             // btnPreviousLine
             // 
             this.btnPreviousLine.Enabled = false;
-            this.btnPreviousLine.Location = new System.Drawing.Point(758, 60);
+            this.btnPreviousLine.Location = new System.Drawing.Point(758, 72);
             this.btnPreviousLine.Name = "btnPreviousLine";
             this.btnPreviousLine.Size = new System.Drawing.Size(28, 24);
             this.btnPreviousLine.TabIndex = 11;
             this.btnPreviousLine.Text = "▲";
             this.toolTips.SetToolTip(this.btnPreviousLine, "Linea anterior del archivo");
             this.btnPreviousLine.UseVisualStyleBackColor = true;
-            this.btnPreviousLine.Click += new System.EventHandler(this.btnPreviousLine_Click);
+            this.btnPreviousLine.Click += new System.EventHandler(this.BtnPreviousLine_Click);
             // 
             // btnNextLine
             // 
             this.btnNextLine.Enabled = false;
             this.btnNextLine.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnNextLine.Location = new System.Drawing.Point(758, 98);
+            this.btnNextLine.Location = new System.Drawing.Point(758, 104);
             this.btnNextLine.Name = "btnNextLine";
             this.btnNextLine.Size = new System.Drawing.Size(28, 24);
             this.btnNextLine.TabIndex = 12;
@@ -383,14 +396,14 @@
             // 
             this.btnCopyOriginal.Enabled = false;
             this.btnCopyOriginal.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.btnCopyOriginal.Location = new System.Drawing.Point(758, 134);
+            this.btnCopyOriginal.Location = new System.Drawing.Point(758, 135);
             this.btnCopyOriginal.Name = "btnCopyOriginal";
             this.btnCopyOriginal.Size = new System.Drawing.Size(28, 24);
             this.btnCopyOriginal.TabIndex = 13;
             this.btnCopyOriginal.Text = "A";
             this.toolTips.SetToolTip(this.btnCopyOriginal, "Copiar original a traducción");
             this.btnCopyOriginal.UseVisualStyleBackColor = true;
-            this.btnCopyOriginal.Click += new System.EventHandler(this.buttonSave_Click);
+            this.btnCopyOriginal.Click += new System.EventHandler(this.ButtonSave_Click);
             // 
             // outputFile
             // 
@@ -398,7 +411,7 @@
             this.outputFile.Controls.Add(this.BtnSaveToPath);
             this.outputFile.Controls.Add(this.txtSaveToFile);
             this.outputFile.Enabled = false;
-            this.outputFile.Location = new System.Drawing.Point(12, 144);
+            this.outputFile.Location = new System.Drawing.Point(12, 129);
             this.outputFile.Name = "outputFile";
             this.outputFile.Size = new System.Drawing.Size(229, 100);
             this.outputFile.TabIndex = 14;
@@ -410,10 +423,10 @@
             this.lblWarningSaving.AutoSize = true;
             this.lblWarningSaving.Location = new System.Drawing.Point(6, 49);
             this.lblWarningSaving.Name = "lblWarningSaving";
-            this.lblWarningSaving.Size = new System.Drawing.Size(222, 39);
+            this.lblWarningSaving.Size = new System.Drawing.Size(209, 39);
             this.lblWarningSaving.TabIndex = 2;
-            this.lblWarningSaving.Text = "Por favor al momento de guardar los cambios\r\nselecciona un nombre de archivo dife" +
-    "rente al \r\narchivo que abriste.";
+            this.lblWarningSaving.Text = "Ten cuidado al momento de guardar los \r\ncambios o selecciona un archivo diferente" +
+    " \r\nal archivo que abriste.";
             // 
             // BtnSaveToPath
             // 
@@ -439,7 +452,7 @@
             this.btnCloseFile.Enabled = false;
             this.btnCloseFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             this.btnCloseFile.ForeColor = System.Drawing.Color.DarkRed;
-            this.btnCloseFile.Location = new System.Drawing.Point(12, 250);
+            this.btnCloseFile.Location = new System.Drawing.Point(12, 242);
             this.btnCloseFile.Name = "btnCloseFile";
             this.btnCloseFile.Size = new System.Drawing.Size(131, 36);
             this.btnCloseFile.TabIndex = 15;
@@ -453,7 +466,7 @@
             this.chkPreviewImage.Checked = true;
             this.chkPreviewImage.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkPreviewImage.Enabled = false;
-            this.chkPreviewImage.Location = new System.Drawing.Point(149, 256);
+            this.chkPreviewImage.Location = new System.Drawing.Point(149, 246);
             this.chkPreviewImage.Name = "chkPreviewImage";
             this.chkPreviewImage.Size = new System.Drawing.Size(99, 30);
             this.chkPreviewImage.TabIndex = 16;
@@ -461,11 +474,25 @@
             this.chkPreviewImage.UseVisualStyleBackColor = true;
             this.chkPreviewImage.CheckedChanged += new System.EventHandler(this.chkPreviewImage_CheckedChanged);
             // 
+            // btnCorregirAcentos
+            // 
+            this.btnCorregirAcentos.Enabled = false;
+            this.btnCorregirAcentos.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.btnCorregirAcentos.Location = new System.Drawing.Point(758, 38);
+            this.btnCorregirAcentos.Name = "btnCorregirAcentos";
+            this.btnCorregirAcentos.Size = new System.Drawing.Size(28, 24);
+            this.btnCorregirAcentos.TabIndex = 17;
+            this.btnCorregirAcentos.Text = "¥";
+            this.toolTips.SetToolTip(this.btnCorregirAcentos, "Reemplazar acentos");
+            this.btnCorregirAcentos.UseVisualStyleBackColor = true;
+            this.btnCorregirAcentos.Click += new System.EventHandler(this.CorregirAcentos_Click);
+            // 
             // mainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(796, 375);
+            this.Controls.Add(this.btnCorregirAcentos);
             this.Controls.Add(this.chkPreviewImage);
             this.Controls.Add(this.btnCloseFile);
             this.Controls.Add(this.outputFile);
@@ -488,6 +515,7 @@
             this.Name = "mainUI";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Muramasa Translator [PS Vita]";
+            this.Load += new System.EventHandler(this.mainUI_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotKey_KeyDown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -517,7 +545,7 @@
         private System.Windows.Forms.GroupBox settingsGroup;
         private System.Windows.Forms.Label templateLabel;
         private System.Windows.Forms.ComboBox comboTemplate;
-        private System.Windows.Forms.CheckBox checkAccents;
+        private System.Windows.Forms.CheckBox checkEscribirOtroArchivo;
         private System.Windows.Forms.RichTextBox originalText;
         private System.Windows.Forms.RichTextBox translatedText;
         private System.Windows.Forms.Label originalTextLabel;
@@ -544,6 +572,8 @@
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.Label lblPreviewWarning;
         private System.Windows.Forms.ToolStripMenuItem irALíneaToolStripMenuItem;
+        private System.Windows.Forms.Label etqEstatus;
+        private System.Windows.Forms.Button btnCorregirAcentos;
     }
 }
 

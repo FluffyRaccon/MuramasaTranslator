@@ -26,12 +26,72 @@ namespace Muramasa_Translator.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string current_line {
+        public int current_line {
             get {
-                return ((string)(this["current_line"]));
+                return ((int)(this["current_line"]));
             }
             set {
                 this["current_line"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int total_lines {
+            get {
+                return ((int)(this["total_lines"]));
+            }
+            set {
+                this["total_lines"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string last_file {
+            get {
+                return ((string)(this["last_file"]));
+            }
+            set {
+                this["last_file"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string last_modified {
+            get {
+                return ((string)(this["last_modified"]));
+            }
+            set {
+                this["last_modified"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string last_error {
+            get {
+                return ((string)(this["last_error"]));
+            }
+            set {
+                this["last_error"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool first_open {
+            get {
+                return ((bool)(this["first_open"]));
+            }
+            set {
+                this["first_open"] = value;
             }
         }
     }

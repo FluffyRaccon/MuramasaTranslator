@@ -37,11 +37,12 @@
             // 
             this.lblInstructions.AutoSize = true;
             this.lblInstructions.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblInstructions.Location = new System.Drawing.Point(12, 16);
+            this.lblInstructions.Location = new System.Drawing.Point(13, 12);
             this.lblInstructions.Name = "lblInstructions";
-            this.lblInstructions.Size = new System.Drawing.Size(387, 208);
-            this.lblInstructions.TabIndex = 0;
+            this.lblInstructions.Size = new System.Drawing.Size(387, 304);
+            this.lblInstructions.TabIndex = 1;
             this.lblInstructions.Text = resources.GetString("lblInstructions.Text");
+            this.lblInstructions.Click += new System.EventHandler(this.lblInstructions_Click);
             // 
             // btnClose
             // 
@@ -49,13 +50,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.AutoSize = true;
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnClose.Location = new System.Drawing.Point(165, 239);
+            this.btnClose.Location = new System.Drawing.Point(165, 331);
             this.btnClose.Margin = new System.Windows.Forms.Padding(5);
             this.btnClose.MaximumSize = new System.Drawing.Size(150, 23);
             this.btnClose.MinimumSize = new System.Drawing.Size(80, 23);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(80, 23);
-            this.btnClose.TabIndex = 1;
+            this.btnClose.TabIndex = 0;
             this.btnClose.Text = "Cerrar";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
@@ -64,7 +65,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 276);
+            this.ClientSize = new System.Drawing.Size(413, 368);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.lblInstructions);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

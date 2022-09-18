@@ -124,10 +124,16 @@
 el menú de abrir archivo.
 
 2.- Editar la línea actual o saltar a la línea deseada (el programa
-cuenta automáticamente las líneas)
+cuenta automáticamente las líneas).
 
-3.- Antes de darle "guardar" es necesario indicar dónde se va a
-guardar el archivo modificado.
+3.- El programa sólo puede guardar una línea a la vez, lo que
+significa que si te cambias de línea, lo que hayas escrito en la
+línea anterior se perderá. El programa no avisa aún si tienes
+cambios pendientes en el cuadro de texto de traducción.
+
+4.- Antes de darle "guardar" es necesario indicar dónde se va a
+guardar el archivo modificado. También puedes guardar con el
+atajo CTRL + S.
 
 4.- Dar créditos a mí por el programa: Fluffy Raccon.
 Sólo se puede usar por el Team Muramasa o TraduSquare.</value>
