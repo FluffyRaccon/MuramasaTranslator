@@ -22,8 +22,8 @@ namespace Muramasa_Translator
                      //oacute = 'ó',
                      //uacute = 'ú';
 
-        private string currentLinePrefix = "Línea actual: ";
-        private string currentStatusPrefix = "Estado: ";
+        private const string currentLinePrefix = "Línea actual: ";
+        private const string currentStatusPrefix = "Estado: ";
 
         //Saves the previous offset before reading the bytes in file.
         private int prevOffset;
@@ -78,9 +78,17 @@ namespace Muramasa_Translator
                 ReplaceTextInFile(inputPath, outputPath, originalText.Text, translatedText.Text);
                 ReadNMSFile(currentLine, extFile);
                 UpdateStatusLabel("Guardado", Color.Green);
+                Properties.Settings.Default.current_line = currentLine;
+                Properties.Settings.Default.last_file = outputPath;
+                Properties.Settings.Default.last_modified = DateTime.Today.ToString();
             }
             else
                 MessageBox.Show("Antes de guardar, revise que los campos de texto no se encuentren vacíos (incluido el archivo de salida).");
+
+            //Updates the settings in app to restore later
+            Properties.Settings.Default.Save();
+
+
         }
 
         /* In case of saving the file with changes performed... 
@@ -608,7 +616,31 @@ namespace Muramasa_Translator
 
         private void mainUI_Load(object sender, EventArgs e)
         {
-            currentLine = Properties.Settings.Default.current_line;
+            string loaded_file = Properties.Settings.Default.last_file;
+            if (loaded_file != null)
+            {
+                int loaded_line = 0;
+                DialogResult restore = MessageBox.Show("Ya has abierto un archivo anteriormente. ¿Quieres ir a la línea que te quedaste?", "Restaurar sesión anterior", MessageBoxButtons.YesNo);
+                if(restore == DialogResult.Yes)
+                {
+                    //MessageBox.Show("Archivo guardado anteriormente: " +loaded_file);
+                    isOpen = change = true;
+                    inputPath = loaded_file;
+                    currentLine = loaded_line = (Properties.Settings.Default.current_line > 0) ? Properties.Settings.Default.current_line : 0;
+                    UpdateFilePath(loaded_file);
+                    EnableOrDisableFields();
+                    updateImageOnOpenFile(Path.GetFileName(loaded_file));
+                    CountLinesOnFile(inputPath);
+                    ReadNMSFile(loaded_line);
+                    UpdateCurrentLine();
+                    if (!checkEscribirOtroArchivo.Checked)
+                    {
+                        outputPath = inputPath;
+                        txtSaveToFile.Text = outputPath;
+                    }
+                    UpdateStatusLabel("Sesión rest.", Color.Green);
+                }
+            }
         }
 
         private void TxtSaveToFile_TextChanged(object sender, EventArgs e)
@@ -623,6 +655,8 @@ namespace Muramasa_Translator
             {
                 ReadNMSFile(--currentLine, extFile);
                 UpdateStatusLabel("Línea ant.", Color.Black);
+                Properties.Settings.Default.current_line = currentLine;
+                Properties.Settings.Default.Save();
                 UpdateCurrentLine();
             }
         }
@@ -633,6 +667,8 @@ namespace Muramasa_Translator
             {
                 ReadNMSFile(++currentLine, extFile);
                 UpdateStatusLabel("Linea sig.", Color.Black);
+                Properties.Settings.Default.current_line = currentLine;
+                Properties.Settings.Default.Save();
                 UpdateCurrentLine();
             }
         }
