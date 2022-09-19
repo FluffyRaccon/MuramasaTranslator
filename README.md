@@ -51,5 +51,7 @@ Aún no tenemos la experiencia para modificar los ejecutables de PS Vita, por lo
 ### No me gusta su traducción, ¿puedo hacer la mía o modificar la de ustedes?
 No os vamos a negar que como todos, somos humanos, y pudiésemos llegar a cometer errores... así que os seremos sinceros: **SÍ, pueden hacer su propia versión**, pero no podéis tomar nuestra versión y modificarla, porque se puede prestar a que quieran hacerse pasar como los autores o de las herramientas o del parche. Es por eso que **de ninguna manera proporcionaremos archivos de desarrollo de nuestra versión**. Si gustan podemos ofreceros ayuda con los temas generales, pero no proporcionaremos las herramientas que hemos usado ya que algunas involucran a terceros que sólo han dado su consentimiento a "Muramasa Team" para usarlas.
 
+¿No sabes a cuál traducción nos referimos o quieres obtener nuestra traducción? Descarga la traducción desde: [TraduSquare](https://tradusquare.es/proyectos/muramasa-rebirth/)
+
 ### Acerca de la codificación de los archivos
 El formato de archivo de los textos del juego UTF-16, pero funciona bien tras modificar con codificación ISO-8859-1. Si trabajas con _lenguaje C# .NET_ no se te ocurra usar System.Text.Encoding.Unicode.GetBytes(string) ya que no tienen la misma longitud de bits al guardar en el binario y podrías estropearlo.
